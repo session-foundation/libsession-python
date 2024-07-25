@@ -1,3 +1,13 @@
+libsession-python (0.0.1-8) unstable; urgency=medium
+
+  [ Thomas Winget ]
+  * add some blinding generator bindings
+
+  [ Jason Rhinelander ]
+  * Use C++20 for compilation
+
+ -- Jason Rhinelander <jason@imaginary.ca>  Thu, 25 Jul 2024 01:41:37 -0300
+
 libsession-python (0.0.1-7) unstable; urgency=medium
 
   [ Thomas Winget ]
