@@ -1,3 +1,9 @@
+libsession-python (0.0.1-7~ubuntu2404) noble; urgency=medium
+
+  * Noble build
+
+ -- Jason Rhinelander <jason@imaginary.ca>  Wed, 24 Jul 2024 22:30:23 -0300
+
 libsession-python (0.0.1-7~ubuntu2310) mantic; urgency=medium
 
   [ Thomas Winget ]
