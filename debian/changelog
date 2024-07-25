@@ -1,5 +1,15 @@
 libsession-python (0.0.1-7~ubuntu2404) noble; urgency=medium
 
+  [ Thomas Winget ]
+  * add some blinding generator bindings
+
+  [ Jason Rhinelander ]
+  * Use C++20 for compilation
+
+ -- Jason Rhinelander <jason@imaginary.ca>  Wed, 24 Jul 2024 22:31:45 -0300
+
+libsession-python (0.0.1-7~ubuntu2404) noble; urgency=medium
+
   * Noble build
 
  -- Jason Rhinelander <jason@imaginary.ca>  Wed, 24 Jul 2024 22:30:23 -0300
