@@ -1,3 +1,9 @@
+libsession-python (0.0.1-8~deb11) bullseye; urgency=medium
+
+  * rebuild
+
+ -- Jason Rhinelander <jason@imaginary.ca>  Thu, 25 Jul 2024 01:42:08 -0300
+
 libsession-python (0.0.1-7~deb11) bullseye; urgency=medium
 
   [ Thomas Winget ]
