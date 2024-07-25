@@ -1,6 +1,16 @@
 libsession-python (0.0.1-7~deb11) bullseye; urgency=medium
 
   [ Thomas Winget ]
+  * add some blinding generator bindings
+
+  [ Jason Rhinelander ]
+  * Use C++20 for compilation
+
+ -- Jason Rhinelander <jason@imaginary.ca>  Wed, 24 Jul 2024 22:31:15 -0300
+
+libsession-python (0.0.1-7~deb11) bullseye; urgency=medium
+
+  [ Thomas Winget ]
   * bind blind25_key_pair
 
  -- Jason Rhinelander <jason@imaginary.ca>  Mon, 29 Jan 2024 14:16:38 -0400
