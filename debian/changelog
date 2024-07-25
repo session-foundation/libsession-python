@@ -1,3 +1,9 @@
+libsession-python (0.0.1-8~ubuntu2004) focal; urgency=medium
+
+  * fix focal build
+
+ -- Jason Rhinelander <jason@imaginary.ca>  Thu, 25 Jul 2024 01:42:26 -0300
+
 libsession-python (0.0.1-7~ubuntu2004) focal; urgency=medium
 
   [ Thomas Winget ]
