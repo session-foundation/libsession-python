@@ -10,7 +10,7 @@ ext_modules = [
     Pybind11Extension(
         "session_util",
         sorted(glob("src/*.cpp")),
-        cxx_std=17,
+        cxx_std=20,
         libraries=["session-config", "session-crypto", "session-onionreq"],
     ),
 ]
