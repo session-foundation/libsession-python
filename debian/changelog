@@ -1,4 +1,4 @@
-libsession-python (0.0.1-7) unstable; urgency=medium
+libsession-python (0.0.1-7) trixie; urgency=medium
 
   [ Thomas Winget ]
   * bind blind25_key_pair
