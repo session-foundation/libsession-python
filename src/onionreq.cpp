@@ -32,11 +32,11 @@ void pybind(pybind11::module m) {
                              py::bytes privkey_b,
                              py::bytes request_b,
                              size_t max_size) {
-                     auto pubkey = usv_from_pybytes(pubkey_b, "x25519_pubkey", 32);
-                     auto privkey = usv_from_pybytes(privkey_b, "x25519_privkey", 32);
-                     auto request = usv_from_pybytes(request_b);
+                     auto pubkey = span_u8_from_pybytes(pubkey_b, "x25519_pubkey", 32);
+                     auto privkey = span_u8_from_pybytes(privkey_b, "x25519_privkey", 32);
+                     auto request = span_u8_from_pybytes(request_b);
                      PyOnionReqParser parser{pubkey, privkey, request, max_size};
-                     ustring pl = parser.move_payload();
+                     std::vector<uint8_t> pl = parser.move_payload();
                      parser.payload_b =
                              py::bytes{reinterpret_cast<const char*>(pl.data()), pl.size()};
                      return parser;
@@ -64,7 +64,7 @@ void pybind(pybind11::module m) {
             .def(
                     "encrypt_reply",
                     [](const PyOnionReqParser& parser, py::bytes reply) {
-                        auto encr = parser.encrypt_reply(usv_from_pybytes(reply));
+                    std::vector<uint8_t> encr = parser.encrypt_reply(span_u8_from_pybytes(reply));
                         return py::bytes{reinterpret_cast<const char*>(encr.data()), encr.size()};
                     },
                     "reply"_a,

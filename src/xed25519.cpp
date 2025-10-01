@@ -12,8 +12,8 @@ void pybind(pybind11::module m) {
     m.def(
             "sign",
             [](py::bytes x25519_privkey, py::bytes msg) {
-                auto a = usv_from_pybytes(x25519_privkey, "x25519_privkey", 32);
-                auto sig = sign(a, usv_from_pybytes(msg));
+                auto a = sv_from_pybytes(x25519_privkey, "x25519_privkey", 32);
+                auto sig = sign(a, sv_from_pybytes(msg));
                 return py::bytes(reinterpret_cast<const char*>(sig.data()), sig.size());
             },
             "x25519_privkey"_a,
@@ -23,7 +23,7 @@ void pybind(pybind11::module m) {
     m.def(
             "pubkey",
             [](py::bytes x25519_pubkey) {
-                auto A = usv_from_pybytes(x25519_pubkey, "x25519_pubkey", 32);
+                auto A = sv_from_pybytes(x25519_pubkey, "x25519_pubkey", 32);
                 auto edpk = pubkey(A);
                 return py::bytes(reinterpret_cast<const char*>(edpk.data()), edpk.size());
             },
@@ -38,9 +38,9 @@ void pybind(pybind11::module m) {
     m.def(
             "verify",
             [](py::bytes signature, py::bytes x25519_pubkey, py::bytes msg) {
-                auto sig = usv_from_pybytes(signature, "signature", 64);
-                auto A = usv_from_pybytes(x25519_pubkey, "x25519_pubkey", 32);
-                return verify(sig, A, usv_from_pybytes(msg));
+                auto sig = sv_from_pybytes(signature, "signature", 64);
+                auto A = sv_from_pybytes(x25519_pubkey, "x25519_pubkey", 32);
+                return verify(sig, A, sv_from_pybytes(msg));
             },
             "signature"_a,
             "x25519_pubkey"_a,
