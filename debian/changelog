@@ -1,3 +1,9 @@
+libsession-python (0.0.1-8~ubuntu2604) resolute; urgency=medium
+
+  * Resolute deb
+
+ -- Jason Rhinelander <jason@session.foundation>  Tue, 07 Jul 2026 17:23:26 -0300
+
 libsession-python (0.0.1-8~ubuntu2404) noble; urgency=medium
 
   * rebuild
