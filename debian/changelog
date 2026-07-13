@@ -1,3 +1,9 @@
+libsession-python (0.0.1-8+1) unstable; urgency=medium
+
+  * Rebuild
+
+ -- Jason Rhinelander <jason@session.foundation>  Mon, 13 Jul 2026 12:12:25 -0300
+
 libsession-python (0.0.1-8) unstable; urgency=medium
 
   [ Thomas Winget ]
