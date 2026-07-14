@@ -27,9 +27,9 @@ void pybind_blinding(py::module m) {
             "blind25_id",
             [](py::bytes session_id, py::bytes server_pk) {
                 auto blinded = blind25_id(
-                        usv_from_pybytes(session_id, "session_id", 33, 32),
-                        usv_from_pybytes(server_pk, "server_pk", 32));
-                return py::bytes{from_unsigned(blinded.data()), blinded.size()};
+                        bytes_from_pybytes(session_id, "session_id", 33, 32),
+                        bytes_from_pybytes(server_pk, "server_pk", 32));
+                return py::bytes{to_string_view(blinded)};
             },
             "session_id"_a,
             "server_pk"_a,
@@ -43,8 +43,7 @@ void pybind_blinding(py::module m) {
         py::bytes privkey;
 
         PyKeypair(const std::pair<session::uc32, session::cleared_uc32>& k)
-            : pubkey{reinterpret_cast<const char*>(k.first.data()), k.first.size()},
-              privkey{reinterpret_cast<const char*>(k.second.data()), k.second.size()} {}
+            : pubkey{to_string_view(k.first)}, privkey{to_string_view(k.second)} {}
     };
 
     py::class_<PyKeypair>(m, "Keypair")
@@ -55,8 +54,8 @@ void pybind_blinding(py::module m) {
             "blind15_key_pair",
             [](py::bytes ed_sk_bytes, py::bytes server_pk) {
                 return std::make_unique<PyKeypair>(blind15_key_pair(
-                        usv_from_pybytes(ed_sk_bytes, "ed25519_seckey", 32, 64),
-                        usv_from_pybytes(server_pk, "server_pk", 32, 64)));
+                        bytes_from_pybytes(ed_sk_bytes, "ed25519_seckey", 32, 64),
+                        bytes_from_pybytes(server_pk, "server_pk", 32, 64)));
             },
             "ed25519_seckey"_a,
             "server_pubkey"_a,
@@ -70,8 +69,8 @@ void pybind_blinding(py::module m) {
             "blind25_key_pair",
             [](py::bytes ed_sk_bytes, py::bytes server_pk) {
                 return std::make_unique<PyKeypair>(blind25_key_pair(
-                        usv_from_pybytes(ed_sk_bytes, "ed25519_seckey", 32, 64),
-                        usv_from_pybytes(server_pk, "server_pk", 32, 64)));
+                        bytes_from_pybytes(ed_sk_bytes, "ed25519_seckey", 32, 64),
+                        bytes_from_pybytes(server_pk, "server_pk", 32, 64)));
             },
             "ed25519_seckey"_a,
             "server_pubkey"_a,
@@ -84,9 +83,9 @@ void pybind_blinding(py::module m) {
     m.def(
             "blind15_sign",
             [](py::bytes ed_sk_bytes, std::string_view server_pk, py::bytes message) {
-                auto ed_sk = usv_from_pybytes(ed_sk_bytes, "ed25519_seckey", 32, 64);
-                auto sig = blind15_sign(ed_sk, server_pk, usv_from_pybytes(message));
-                return py::bytes{from_unsigned(sig.data()), sig.size()};
+                auto ed_sk = bytes_from_pybytes(ed_sk_bytes, "ed25519_seckey", 32, 64);
+                auto sig = blind15_sign(ed_sk, server_pk, bytes_from_pybytes(message));
+                return py::bytes{to_string_view(sig)};
             },
             "ed25519_seckey"_a,
             "server_pubkey"_a,
@@ -106,9 +105,9 @@ void pybind_blinding(py::module m) {
     m.def(
             "blind25_sign",
             [](py::bytes ed_sk_bytes, std::string_view server_pk, py::bytes message) {
-                auto ed_sk = usv_from_pybytes(ed_sk_bytes, "ed25519_seckey", 32, 64);
-                auto sig = blind25_sign(ed_sk, server_pk, usv_from_pybytes(message));
-                return py::bytes{from_unsigned(sig.data()), sig.size()};
+                auto ed_sk = bytes_from_pybytes(ed_sk_bytes, "ed25519_seckey", 32, 64);
+                auto sig = blind25_sign(ed_sk, server_pk, bytes_from_pybytes(message));
+                return py::bytes{to_string_view(sig)};
             },
             "ed25519_seckey"_a,
             "server_pubkey"_a,
