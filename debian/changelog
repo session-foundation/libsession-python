@@ -1,3 +1,12 @@
+libsession-python (0.1.0-1~ubuntu2604) resolute; urgency=medium
+
+  * Use builds.session.codes for build uploads
+  * CI: drop dead lokinet-ci- prefix from the builder image registry path
+  * Update apt repo signing key to deb.session.foundation.gpg
+  * Fixes for compilation with current libsession-util
+
+ -- Jason Rhinelander <jason@session.foundation>  Tue, 14 Jul 2026 15:53:07 -0300
+
 libsession-python (0.0.1-8~ubuntu2604) resolute; urgency=medium
 
   * Resolute deb
