@@ -1,3 +1,11 @@
+libsession-python (0.1.0-1~deb14) forky; urgency=medium
+
+  * CI: send uploads to builds.session.codes (builds.lokinet.dev is dead)
+  * Update apt repo signing key to deb.session.foundation.gpg
+  * Fixes for compilation with current libsession-util
+
+ -- Jason Rhinelander <jason@session.foundation>  Tue, 14 Jul 2026 15:52:59 -0300
+
 libsession-python (0.0.1-9~deb14) forky; urgency=medium
 
   * forky deb
