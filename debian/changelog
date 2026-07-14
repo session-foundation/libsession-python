@@ -1,3 +1,11 @@
+libsession-python (0.1.0-1~deb13) trixie; urgency=medium
+
+  * CI: send uploads to builds.session.codes (builds.lokinet.dev is dead)
+  * Update apt repo signing key to deb.session.foundation.gpg
+  * Fixes for compilation with current libsession-util
+
+ -- Jason Rhinelander <jason@session.foundation>  Tue, 14 Jul 2026 15:53:01 -0300
+
 libsession-python (0.0.1-8~deb13.1) trixie; urgency=medium
 
   * Rebuild for trixie
