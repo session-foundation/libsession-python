@@ -20,7 +20,7 @@ local deb_pipeline(image, buildarch='amd64', debarch='amd64', jobs=6) = {
         'echo "Building on ${DRONE_STAGE_MACHINE}"',
         'echo "man-db man-db/auto-update boolean false" | debconf-set-selections',
         'echo deb http://deb.oxen.io' + repo_suffix + ' ' + distro + ' main >/etc/apt/sources.list.d/oxen.list',
-        'cp debian/deb.oxen.io.gpg /etc/apt/trusted.gpg.d',
+        'cp debian/deb.session.foundation.gpg /etc/apt/trusted.gpg.d',
         apt_get_quiet + ' update',
         apt_get_quiet + ' install -y eatmydata',
         'eatmydata ' + apt_get_quiet + ' dist-upgrade -y',
