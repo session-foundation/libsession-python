@@ -1,0 +1,84 @@
+From: Jason Rhinelander <jason@imaginary.ca>
+Date: Wed, 15 Jul 2026 20:22:20 -0300
+Subject: Vendor header-only fmt/spdlog to build against libsession-util
+
+On distros whose system fmt/spdlog are too old for the header-only oxen-logging
+headers that libsession-util's public headers include, clone the same fmt (12.1.0)
+and spdlog (v1.17.0) that liboxen-logging is built against and compile them into the
+extension header-only, with the matching FMT_HEADER_ONLY / SPDLOG_FMT_EXTERNAL /
+SPDLOG_FWRITE_UNLOCKED defines.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+---
+ setup.py | 41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+
+diff --git a/setup.py b/setup.py
+index 7532df0..1333297 100644
+--- a/setup.py
++++ b/setup.py
+@@ -1,3 +1,6 @@
++import os
++import subprocess
++
+ from setuptools import setup
+ from glob import glob
+ 
+@@ -6,12 +9,49 @@ from pybind11.setup_helpers import Pybind11Extension, build_ext
+ 
+ __version__ = "0.1.0"
+ 
++# This distro's system fmt/spdlog are too old for the (header-only) oxen-logging headers that
++# libsession-util's headers pull in, so vendor the same fmt/spdlog that liboxen-logging is built
++# against and compile them header-only with the same defines liboxen-logging uses. The clone runs
++# at build time (not import time, so `clean`/metadata phases don't need it) and by tag (the tags
++# below are the commits liboxen-logging pins: fmt 407c905, spdlog 79524dd).
++_vendored = [
++    ("fmt", "https://github.com/fmtlib/fmt.git", "12.1.0"),
++    ("spdlog", "https://github.com/gabime/spdlog.git", "v1.17.0"),
++]
++_extern = os.path.join(os.path.dirname(os.path.abspath(__file__)), "extern")
++
++
++class vendored_build_ext(build_ext):
++    def run(self):
++        # pybuild points http(s)_proxy at a dead port (127.0.0.1:9) so setuptools can't fetch from
++        # PyPI mid-build; drop those for our deliberate fmt/spdlog clone so it can reach the remote.
++        env = {
++            k: v
++            for k, v in os.environ.items()
++            if k.lower() not in ("http_proxy", "https_proxy", "all_proxy")
++        }
++        for name, url, tag in _vendored:
++            dest = os.path.join(_extern, name)
++            if not os.path.isdir(os.path.join(dest, "include")):
++                subprocess.check_call(
++                    ["git", "-c", "http.proxy=", "clone", "-q", "--depth=1", "--branch", tag, url, dest],
++                    env=env,
++                )
++        super().run()
++
++
+ ext_modules = [
+     Pybind11Extension(
+         "session_util",
+         sorted(glob("src/*.cpp")),
+         cxx_std=20,
+         libraries=["session-config", "session-crypto", "session-network"],
++        include_dirs=[os.path.join(_extern, name, "include") for name, _, _ in _vendored],
++        define_macros=[
++            ("FMT_HEADER_ONLY", "1"),
++            ("SPDLOG_FMT_EXTERNAL", None),
++            ("SPDLOG_FWRITE_UNLOCKED", None),
++        ],
+     ),
+ ]
+ 
+@@ -24,6 +64,7 @@ setup(
+     description="Python wrapper for the libsession utilities library",
+     long_description="",
+     ext_modules=ext_modules,
++    cmdclass={"build_ext": vendored_build_ext},
+     zip_safe=False,
+     python_requires=">=3.7",
+ )
