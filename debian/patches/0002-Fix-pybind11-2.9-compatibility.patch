@@ -1,0 +1,52 @@
+From: Jason Rhinelander <jason@imaginary.ca>
+Date: Wed, 15 Jul 2026 20:51:01 -0300
+Subject: Fix pybind11 <2.9 compatibility
+
+Bullseye's pybind11-dev is 2.6.2, which doesn't have the string_view
+constructor for py::bytes.  This reverts to the equivalent two-arg
+constructor for bullseye.
+---
+ src/blinding.cpp | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/src/blinding.cpp b/src/blinding.cpp
+index 63ff081..165243c 100644
+--- a/src/blinding.cpp
++++ b/src/blinding.cpp
+@@ -29,7 +29,7 @@ void pybind_blinding(py::module m) {
+                 auto blinded = blind25_id(
+                         bytes_from_pybytes(session_id, "session_id", 33, 32),
+                         bytes_from_pybytes(server_pk, "server_pk", 32));
+-                return py::bytes{to_string_view(blinded)};
++                return py::bytes{to_string_view(blinded).data(), to_string_view(blinded).size()};
+             },
+             "session_id"_a,
+             "server_pk"_a,
+@@ -43,7 +43,8 @@ void pybind_blinding(py::module m) {
+         py::bytes privkey;
+ 
+         PyKeypair(const std::pair<session::uc32, session::cleared_uc32>& k)
+-            : pubkey{to_string_view(k.first)}, privkey{to_string_view(k.second)} {}
++            : pubkey{to_string_view(k.first).data(), to_string_view(k.first).size()},
++              privkey{to_string_view(k.second).data(), to_string_view(k.second).size()} {}
+     };
+ 
+     py::class_<PyKeypair>(m, "Keypair")
+@@ -85,7 +86,7 @@ void pybind_blinding(py::module m) {
+             [](py::bytes ed_sk_bytes, std::string_view server_pk, py::bytes message) {
+                 auto ed_sk = bytes_from_pybytes(ed_sk_bytes, "ed25519_seckey", 32, 64);
+                 auto sig = blind15_sign(ed_sk, server_pk, bytes_from_pybytes(message));
+-                return py::bytes{to_string_view(sig)};
++                return py::bytes{to_string_view(sig).data(), to_string_view(sig).size()};
+             },
+             "ed25519_seckey"_a,
+             "server_pubkey"_a,
+@@ -107,7 +108,7 @@ void pybind_blinding(py::module m) {
+             [](py::bytes ed_sk_bytes, std::string_view server_pk, py::bytes message) {
+                 auto ed_sk = bytes_from_pybytes(ed_sk_bytes, "ed25519_seckey", 32, 64);
+                 auto sig = blind25_sign(ed_sk, server_pk, bytes_from_pybytes(message));
+-                return py::bytes{to_string_view(sig)};
++                return py::bytes{to_string_view(sig).data(), to_string_view(sig).size()};
+             },
+             "ed25519_seckey"_a,
+             "server_pubkey"_a,
