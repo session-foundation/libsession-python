@@ -18,7 +18,7 @@ cd ..
 echo "$SSH_KEY" >ssh_key
 
 set -o xtrace  # Don't start tracing until *after* we write the ssh key
-shopt -s nullglob # So that *_all.deb below is allowed to expand to nothing if no _all packages
+shopt -s nullglob # So the globs below can expand to nothing (no .ddebs on Debian, often no _all packages)
 
 chmod 600 ssh_key
 
@@ -32,7 +32,7 @@ br="${br//\//-}"
 upload_to="builds.session.codes/${DRONE_REPO// /_}/$br/$base"
 
 put=
-debs=(*_${debarch}.deb)
+debs=(*_${debarch}.deb *_${debarch}.ddeb)
 if [ "$debarch" = "amd64" ]; then
     debs+=(*_all.deb)
 fi
@@ -43,6 +43,9 @@ for deb in "${debs[@]}"; do
     dpkg-deb --info $deb
     echo -e "\n\n\e[35;1m$deb contents:\e[0m"
     dpkg-deb --contents $deb
+done
+for f in *_${debarch}.buildinfo; do
+    put+=$'\n'"put $f $upload_to"
 done
 
 # sftp doesn't have any equivalent to mkdir -p, so we have to split the above up into a chain of
