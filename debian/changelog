@@ -1,3 +1,13 @@
+libsession-python (0.1.1-1~ubuntu2610) stonking; urgency=medium
+
+  [ Audric Ackermann ]
+  * Expose blind15_id, with tests
+
+  [ Jason Rhinelander ]
+  * Compilation fixes for newer libsession-util
+
+ -- Jason Rhinelander <jason@session.foundation>  Fri, 09 Oct 2026 16:43:11 -0300
+
 libsession-python (0.1.0-3~ubuntu2610) stonking; urgency=medium
 
   * Rebuild
