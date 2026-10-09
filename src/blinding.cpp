@@ -38,6 +38,48 @@ void pybind_blinding(py::module m) {
             "may omit the 05 prefix; returns the blinded id as a length-33 bytes.  This blinded "
             "pubkey is an Ed25519 pubkey, prefixed with 0x25.");
 
+    m.def(
+            "blind15_id",
+            [](py::str session_id, py::str server_pk) {
+                auto ids = blind15_id(
+                        static_cast<std::string>(session_id), static_cast<std::string>(server_pk));
+                return py::make_tuple(ids[0], ids[1]);
+            },
+            "session_id"_a,
+            "server_pk"_a,
+            "Computes the two possible blinded session ids using 15xxx-style Community pubkey "
+            "blinding.\n\n"
+            "Takes the (unblinded) Session ID and server pubkey as hex strings; returns both "
+            "blinded ids as a 2-tuple of hex strings, each an Ed25519 pubkey prefixed with '15'.  "
+            "The positive one is first.\n\n"
+            "Both are returned because blinding an X25519 Session ID recovers the underlying "
+            "Ed25519 pubkey only up to its sign, so which of the two an account exists under is "
+            "not derivable from the Session ID alone.  Use `blind15_key_pair` instead when the "
+            "Ed25519 secret key is known, which resolves the sign.");
+
+    m.def(
+            "blind15_id",
+            [](py::bytes session_id, py::bytes server_pk) {
+                auto blinded = blind15_id(
+                        bytes_from_pybytes(session_id, "session_id", 33, 32),
+                        bytes_from_pybytes(server_pk, "server_pk", 32));
+                auto pos = py::bytes{to_string_view(blinded)};
+                blinded[32] ^= 0x80;
+                return py::make_tuple(std::move(pos), py::bytes{to_string_view(blinded)});
+            },
+            "session_id"_a,
+            "server_pk"_a,
+            "Computes the two possible blinded session ids using 15xxx-style Community pubkey "
+            "blinding.\n\n"
+            "Takes the (unblinded) Session ID and server pubkey as bytes strings; the session ID "
+            "may omit the 05 prefix; returns both blinded ids as a 2-tuple of length-33 bytes, "
+            "each an Ed25519 pubkey prefixed with 0x15.  The positive one is first.\n\n"
+            "Both are returned, unlike the C++ overload of the same name, because which of the "
+            "two an account exists under is decided by a sign this derivation cannot recover, and "
+            "picking the wrong one does not announce itself: a SOGS server will create the "
+            "account row for an id nobody holds.  Use `blind15_key_pair` instead when the Ed25519 "
+            "secret key is known.");
+
     struct PyKeypair {
         py::bytes pubkey;
         py::bytes privkey;
