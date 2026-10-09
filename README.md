@@ -22,3 +22,10 @@ Check the source out with
 Install using:
 
     $ pip3 install .
+
+## Tests
+
+    $ pip3 install pytest
+    $ pytest
+
+The tests import the installed module, so run `pip3 install .` first.
