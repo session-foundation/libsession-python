@@ -20,7 +20,7 @@ inline std::span<const unsigned char> bytes_from_pybytes(const py::bytes& in) {
 
 // Takes a py::bytes, name, and 1+ size arguments: the bytes length must match one of the given
 // sizes, or else an exception will be thrown (referencing the given name, e.g. argument name).
-template <typename... Sizes, typename = std::enable_if_t<(std::is_integral_v<Sizes> && ...)>>
+template <std::integral... Sizes>
 std::span<const unsigned char> bytes_from_pybytes(
         const py::bytes& in, std::string_view name, size_t size0, Sizes... moresizes) {
     auto bytes = bytes_from_pybytes(in);
@@ -31,6 +31,19 @@ std::span<const unsigned char> bytes_from_pybytes(
         throw std::invalid_argument{std::move(err)};
     }
     return bytes;
+}
+
+// Similar to the above, but takes a fixed templated size and returns a fixed span instead of
+// dynamic span (or throws if input size doesn't match).
+template <size_t Size>
+std::span<const unsigned char, Size> bytes_from_pybytes(
+        const py::bytes& in, std::string_view name) {
+    auto bytes = bytes_from_pybytes(in);
+    if (bytes.size() != Size)
+        throw std::invalid_argument{
+                "invalid bytes size (" + std::to_string(bytes.size()) + " for '" +
+                std::string{name} + "'. Expected " + std::to_string(Size)};
+    return bytes.first<Size>();
 }
 
 }  // namespace session
