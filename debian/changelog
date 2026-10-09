@@ -1,3 +1,9 @@
+libsession-python (0.1.0-3~ubuntu2404) noble; urgency=medium
+
+  * Rebuild
+
+ -- Jason Rhinelander <jason@session.foundation>  Fri, 09 Oct 2026 16:22:40 -0300
+
 libsession-python (0.1.0-2~ubuntu2404) noble; urgency=medium
 
   * Rebuild
